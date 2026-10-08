@@ -44,3 +44,27 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+      - name: Verify live site has no example articles
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://tuna1999.github.io"
+          ok=0
+          for attempt in $(seq 1 12); do
+            echo "Live site verification attempt: ${attempt}/12"
+            if curl -fsSL --connect-timeout 15 --max-time 30 -H 'Cache-Control: no-cache' "${base}/?revision=${GITHUB_SHA}" -o /tmp/home.html \
+              && curl -fsSL --connect-timeout 15 --max-time 30 -H 'Cache-Control: no-cache' "${base}/blog/?revision=${GITHUB_SHA}" -o /tmp/blog.html \
+              && ! grep -Eiq 'Latest research|AREAS OF FOCUS|Windows Malware Triage|A Repeatable Reverse Engineering Workflow|Threat Intelligence: Validate Before You Alert' /tmp/home.html \
+              && grep -Fq 'No research published yet.' /tmp/blog.html \
+              && ! grep -Eiq 'Windows Malware Triage|A Repeatable Reverse Engineering Workflow|Threat Intelligence: Validate Before You Alert' /tmp/blog.html; then
+              ok=1
+              break
+            fi
+            echo 'Old content still visible or site not reachable; retrying.'
+            sleep 10
+          done
+          if [ "${ok}" -ne 1 ]; then
+            echo 'ERROR: live site still does not reflect empty blog.'
+            exit 1
+          fi
+          echo "Verified live homepage and empty blog for ${GITHUB_SHA}"
