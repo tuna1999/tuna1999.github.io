@@ -14,11 +14,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: withastro/action@v6
+      - uses: actions/checkout@v7
+      - name: Build from clean Astro state
+        uses: withastro/action@v6
         with:
           package-manager: npm
           node-version: '24'
+          cache: 'false'
+          build-cmd: 'rm -rf .astro node_modules/.astro dist && npm run build'
+      - name: Verify no published articles or stale pages
+        run: |
+          if find dist/blog -mindepth 1 -maxdepth 1 -type d | grep -q .; then
+            echo 'Unexpected published article directories in dist/blog'
+            find dist/blog -mindepth 1 -maxdepth 2 -type f
+            exit 1
+          fi
+          if find dist/tags -mindepth 1 -maxdepth 1 -type d | grep -q .; then
+            echo 'Unexpected tag directories in dist/tags'
+            find dist/tags -mindepth 1 -maxdepth 2 -type f
+            exit 1
+          fi
+          echo 'Verified: build has no published articles or tags.'
   deploy:
     needs: build
     runs-on: ubuntu-latest
