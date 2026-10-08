@@ -6,5 +6,7 @@ const counts = new Map<string, number>();
 posts.forEach(post => post.data.tags.forEach(tag => counts.set(tag, (counts.get(tag) || 0) + 1)));
 const tags = [...counts.entries()].sort((a,b) => a[0].localeCompare(b[0]));
 ---
-<Base title="Topics"><section class="shell topics"><div class="eyebrow">RESEARCH INDEX</div><h1 class="page-heading">Topics<span>.</span></h1><p class="page-intro">Explore articles by subject and research area.</p><div class="tag-list">{tags.map(([tag, count]) => <a href={`/tags/${slugTag(tag)}/`}>{tag} <small>{count}</small></a>)}</div></section></Base>
-<style>.topics{padding-top:77px;min-height:45vh}.page-heading span{color:var(--green)}.tag-list{margin-top:37px;display:flex;gap:12px;flex-wrap:wrap}.tag-list a{border:1px solid var(--border);background:var(--panel);padding:11px 15px;border-radius:7px;font:13px 'DM Mono',monospace}.tag-list a:hover{border-color:var(--green)}small{color:var(--green)}</style>
+<Base title="Topics"><section class="shell topics"><div class="eyebrow">RESEARCH INDEX</div><h1 class="page-heading">Topics<span>.</span></h1><p class="page-intro">Explore articles by subject and research area.</p>
+  {tags.length > 0 ? <div class="tag-list">{tags.map(([tag, count]) => <a href={`/tags/${slugTag(tag)}/`}>{tag} <small>{count}</small></a>)}</div> : <p class="empty-state">No topics yet. Tags will appear when the first article is published.</p>}
+</section></Base>
+<style>.topics{padding-top:77px;min-height:45vh}.page-heading span{color:var(--green)}.tag-list{margin-top:37px;display:flex;gap:12px;flex-wrap:wrap}.tag-list a{border:1px solid var(--border);background:var(--panel);padding:11px 15px;border-radius:7px;font:13px 'DM Mono',monospace}.tag-list a:hover{border-color:var(--green)}small{color:var(--green)}.empty-state{border:1px dashed #315048;background:var(--panel);padding:28px;border-radius:9px;margin-top:30px;color:var(--muted)}</style>
