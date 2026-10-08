@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { publishedPosts, slugTag } from '../../lib/posts';
+export async function getStaticPaths() {
+  const posts = await publishedPosts();
+  const tags = [...new Set(posts.flatMap(post => post.data.tags))];
+  return tags.map(tag => ({ params: { tag: slugTag(tag) }, props: { tag } }));
+}
+const { tag } = Astro.props;
+const posts = (await publishedPosts()).filter(post => post.data.tags.includes(tag));
+---
+<Base title={tag}><section class="shell topic"><div class="eyebrow">TOPIC / {tag.toUpperCase()}</div><h1 class="page-heading">{tag}<span>.</span></h1><p class="page-intro">{posts.length} research notes on this topic.</p><div class="post-grid">{posts.map(post => <PostCard post={post} />)}</div></section></Base>
+<style>.topic{padding-top:77px}.page-heading span{color:var(--green)}.post-grid{margin-top:35px}</style>

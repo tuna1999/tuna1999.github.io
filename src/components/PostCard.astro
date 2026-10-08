@@ -1,0 +1,12 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { dateLabel } from '../lib/posts';
+interface Props { post: CollectionEntry<'blog'>; }
+const { post } = Astro.props;
+---
+<article class="post-card">
+  <div class="meta"><span class="category">{post.data.category.toUpperCase()}</span> &nbsp; / &nbsp; {dateLabel(post.data.pubDate)}</div>
+  <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+  <p>{post.data.description}</p>
+  <footer><div>{post.data.tags.slice(0, 3).map((tag) => <span class="tag">{tag}</span>)}</div><a class="read-more" href={`/blog/${post.id}/`}>Read article →</a></footer>
+</article>

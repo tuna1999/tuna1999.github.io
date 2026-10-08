@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { publishedPosts } from '../../lib/posts';
+const posts = await publishedPosts();
+---
+<Base title="Research">
+  <section class="shell listing"><div class="eyebrow">RESEARCH ARCHIVE</div><h1 class="page-heading">Field notes & analysis<span>.</span></h1><p class="page-intro">Technical writeups, repeatable investigations, and experiments at the intersection of security and systems.</p>
+  <label class="search-label" for="search">SEARCH THE ARCHIVE</label><input id="search" type="search" placeholder="Search articles, topics, and keywords…" autocomplete="off" />
+  <div id="results" class="post-grid">{posts.map(post => <div class="entry" data-search={`${post.data.title} ${post.data.description} ${post.data.tags.join(' ')} ${post.data.category}`.toLowerCase()}><PostCard post={post} /></div>)}</div><p id="empty" hidden>No matching research notes found.</p></section>
+</Base>
+<script>
+  const input = document.querySelector<HTMLInputElement>('#search');
+  const entries = [...document.querySelectorAll<HTMLElement>('.entry')];
+  const empty = document.querySelector<HTMLElement>('#empty');
+  input?.addEventListener('input', () => {
+    const query = input.value.trim().toLowerCase();
+    let count = 0;
+    entries.forEach(entry => { const match = (entry.dataset.search || '').includes(query); entry.hidden = !match; if (match) count++; });
+    if (empty) empty.hidden = count !== 0;
+  });
+</script>
+<style>.listing{padding-top:77px}.page-heading span{color:var(--green)}.search-label{font:11px 'DM Mono',monospace;color:var(--green);display:block;margin-top:38px;margin-bottom:10px}input{padding:15px 17px;display:block;width:100%;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:7px;outline:0;margin-bottom:28px;font:14px Inter,sans-serif}input:focus{border-color:var(--green)}.entry{min-width:0}.entry[hidden]{display:none}#empty{color:var(--muted)}</style>
