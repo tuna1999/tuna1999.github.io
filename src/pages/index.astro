@@ -12,13 +12,12 @@ const posts = await publishedPosts();
     <div class="hero-actions"><a class="primary" href="/blog/">Explore research ↗</a><a class="secondary" href="https://github.com/tuna1999" target="_blank" rel="noopener noreferrer">View GitHub ↗</a></div>
     <div class="terminal"><div class="terminal-header"><span class="lights">● ● ●</span><span>research@tuna:~</span><span>⌁</span></div><div class="terminal-body"><p><span class="prompt">❯</span> whoami</p><p class="out">security researcher / reverse engineer / developer</p><p><span class="prompt">❯</span> cat interests.txt</p><p class="out">malware-analysis&nbsp; reverse-engineering&nbsp; threat-intel</p><p><span class="prompt">❯</span> <span class="cursor">▌</span></p></div></div>
   </section>
-  <section class="shell latest">
-    <div class="section-top"><div><div class="eyebrow">FIELD NOTES / {String(posts.length).padStart(3, '0')}</div><h2 class="section-heading">Latest research</h2></div>{posts.length > 0 && <a class="read-more" href="/blog/">All articles →</a>}</div>
-    {posts.length > 0
-      ? <div class="post-grid">{posts.slice(0, 4).map(post => <PostCard post={post} />)}</div>
-      : <div class="empty-state"><span class="eyebrow">NO PUBLICATIONS YET</span><h3>Research notes coming soon.</h3><p>This space is ready for upcoming investigations and technical write-ups.</p></div>
-    }
-  </section>
+  {posts.length > 0 && (
+    <section class="shell latest">
+      <div class="section-top"><div><div class="eyebrow">FIELD NOTES / {String(posts.length).padStart(3, '0')}</div><h2 class="section-heading">Latest research</h2></div><a class="read-more" href="/blog/">All articles →</a></div>
+      <div class="post-grid">{posts.slice(0, 4).map(post => <PostCard post={post} />)}</div>
+    </section>
+  )}
   <section class="shell focuses"><div class="eyebrow">AREAS OF FOCUS</div><div class="focus-grid"><div><span>01 /</span><h3>Malware Analysis</h3><p>Static and dynamic analysis, behavioral triage and detection engineering.</p></div><div><span>02 /</span><h3>Reverse Engineering</h3><p>Binary formats, debuggers, decompilers and protocol internals.</p></div><div><span>03 /</span><h3>Threat Intelligence</h3><p>Campaign tracking, adversary tradecraft and defensible indicators.</p></div></div></section>
 </Base>
 <style>
